@@ -4,7 +4,7 @@ import React, {useState, useId } from 'react'
 import TodoItem from './TodoItem';
 
 interface Todo{
-    id: string;
+    id: number;
     text: string;
 }
 
@@ -13,29 +13,34 @@ interface Todo{
 export default function todoList(){
     const [todos, setTodos]= useState<Todo[]>([]);
     const[newTodo, setNewTodo]= useState<string>("");
-    const [editMode, setEditMode] = useState<string | null>(null);
-    const newId= useId();
+    const [editTodoId, setEditTodoId] = useState<number | null>(null);
+   
+
+
 
     const addTodo=(): void=>{
         if(newTodo.trim() !== ""){
-            setTodos([...todos, { id: newId, text: newTodo}]);
+            setTodos([...todos, { id: Date.now(), text: newTodo}]);
             setNewTodo("");
         }
     };
 
-    const removeTodo = (id:string): void =>{
+    const removeTodo = (id:number): void =>{
         setTodos(todos.filter(todo=> todo.id !==id));
+        if (editTodoId === id) {
+          setEditTodoId(null);
+        }
     }
 
-    const startEdit = (id: string): void => {
-        setEditMode(id);
+    const startEdit = (id: number): void => {
+      setEditTodoId(id);
       };
 
-    const editTodo = (id: string, newText: string): void => {
+    const editTodo = (id: number, newText: string): void => {
         setTodos(todos.map(todo =>
           todo.id === id ? { ...todo, text: newText } : todo
         ));
-        setEditMode(null);
+        setEditTodoId(null);
       };
 
   return (
@@ -61,7 +66,7 @@ todo={todo}
 removeTodo={removeTodo}  
 editTodo={editTodo}
 startEdit={startEdit}
-isEditing={editMode === todo.id}
+isEditing={editTodoId === todo.id}
 />))}
 
             </ul>
@@ -70,3 +75,5 @@ isEditing={editMode === todo.id}
     </div>
   )
 }
+
+

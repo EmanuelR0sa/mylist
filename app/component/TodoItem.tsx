@@ -1,19 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import React from 'react'
 
 
 interface TodoItemProps{
-    todo:{id:string; text: string};
-    removeTodo: (id: string)=> void;
-    editTodo: (id: string, newText: string)=> void;
-    startEdit: (id: string) => void;
+    todo:{id:number; text: string};
+    removeTodo: (id: number)=> void;
+    editTodo: (id: number, newText: string)=> void;
+    startEdit: (id: number) => void;
     isEditing: boolean;
 }
 
 export default function TodoItem({todo, removeTodo, editTodo, startEdit, isEditing }:TodoItemProps) {
     const [editedText, setEditedText] = useState<string>(todo.text);
     
-    const handleEdit = (): void => {
+    useEffect(() => {
+      setEditedText(todo.text);
+    }, [todo.text, isEditing]);
+
+    const handleEdit = ():void => {
         editTodo(todo.id, editedText);
       };
   
