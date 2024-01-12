@@ -1,21 +1,27 @@
 
 "use client"
-import React, {useState, useId } from 'react'
+import React, {useState, useEffect } from 'react'
 import TodoItem from './TodoItem';
 
 interface Todo{
     id: number;
     text: string;
+  
 }
 
 
 
 export default function todoList(){
-    const [todos, setTodos]= useState<Todo[]>([]);
+  const storedTodoString = localStorage.getItem("myTodos");
+  const initialTodos: Todo[] = storedTodoString ? JSON.parse(storedTodoString) : [];
+
+    const [todos, setTodos]= useState<Todo[]>(initialTodos);
     const[newTodo, setNewTodo]= useState<string>("");
     const [editTodoId, setEditTodoId] = useState<number | null>(null);
    
-
+useEffect(()=>{
+  localStorage.setItem("myTodos", JSON.stringify(todos))
+},[todos])
 
 
     const addTodo=(): void=>{
@@ -43,6 +49,8 @@ export default function todoList(){
         setEditTodoId(null);
       };
 
+
+
   return (
     <div>
          
@@ -50,9 +58,10 @@ export default function todoList(){
         <h1 className='text-2xl text-center font-bold mb-4'>Todo List</h1> 
         <div> 
         <input
-        className="border-2 border-current mx-4 rounded-lg"
+        className="border-2 border-current mx-4 rounded-lg  pl-2"
           type="text" 
         value= {newTodo}
+        placeholder="...Add new todo"
         onChange={(e)=> setNewTodo(e.target.value)}
         />
         <button className="bg-indigo-500 rounded-md px-4  text-white" onClick={addTodo} >Add</button>
